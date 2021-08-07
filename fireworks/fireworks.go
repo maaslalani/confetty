@@ -1,7 +1,10 @@
-package confetty
+// TODO: Lots of code duplication between fireworks and confetti extract to a
+// `particle system` package
+package fireworks
 
 import (
 	"fmt"
+	"math"
 	"math/rand"
 	"strings"
 	"time"
@@ -21,8 +24,8 @@ const (
 )
 
 var (
-	colors     = []string{"#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"}
-	characters = []string{"█", "▓", "▒", "░", "▄", "▀"}
+	colors     = []string{"#fdff6a", "#ff718d"}
+	characters = []string{"•"}
 	// characters = []string{"▄", "▀"}
 )
 
@@ -41,7 +44,7 @@ func wait(d time.Duration) tea.Cmd {
 	}
 }
 
-// Confetti model
+// Fireworks model
 type model struct {
 	particles []*Particle
 	viewport  viewport.Model
@@ -50,36 +53,45 @@ type model struct {
 type Particle struct {
 	char    string
 	physics *physics.Physics
+	radius  float64
 }
 
-func InitialModel() model {
-	particles := []*Particle{}
-
-	width, _, err := term.GetSize(0)
+func spawn() []*Particle {
+	width, height, err := term.GetSize(0)
 	if err != nil {
 		panic(err)
 	}
 
-	for i := 0; i < numParticles; i++ {
-		x := float64(width / 2)
-		y := float64(-1)
+	color := lipgloss.Color(array.Sample(colors))
+	v := float64(rand.Intn(10) + 20.0)
+	r := float64(rand.Intn(5) + 10)
 
+	particles := []*Particle{}
+
+	x := rand.Float64() * float64(width)
+	y := rand.Float64() * float64(height)
+
+	for i := 0; i < numParticles; i++ {
 		p := &Particle{
 			physics: physics.New(
-				physics.Point{X: x + (float64(width/4) * (rand.Float64() - 0.5)), Y: y},
-				physics.Vector{X: (rand.Float64() - 0.5) * 100, Y: rand.Float64() * 50},
-				physics.Vector(physics.Gravity),
+				physics.Point{X: x, Y: y},
+				physics.Vector{X: math.Cos(float64(i)) * v, Y: math.Sin(float64(i)) * v / 2},
+				physics.Vector{Y: 2},
 				framesPerSecond,
 			),
 			char: lipgloss.NewStyle().
-				Foreground(lipgloss.Color(array.Sample(colors))).
+				Foreground(color).
 				Render(array.Sample(characters)),
+			radius: r,
 		}
 
 		particles = append(particles, p)
 	}
+	return particles
+}
 
-	return model{particles: particles}
+func InitialModel() model {
+	return model{particles: spawn()}
 }
 
 // Init initializes the confetti after a small delay
@@ -104,15 +116,22 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			x := p.physics.PosX()
 
 			// Particle is out of view
-			if y >= m.viewport.Height-1 || x < 0 || x >= m.viewport.Width-1 {
+			if y < 0 || y >= m.viewport.Height-1 || x < 0 || x >= m.viewport.Width-1 {
 				particlesVisible -= 1
+				continue
+			}
+
+			// Particle has reached its distance from the radius.
+			// In the fireworks simulation, firework particles fade after reaching a certain point
+			// just like in real life, so we don't render them if they've passed a certain distance
+			if p.physics.Displacement() > p.radius {
+				particlesVisible -= 1
+				continue
 			}
 		}
 
 		if particlesVisible <= 0 {
-			for _, p := range m.particles {
-				p.physics.Reset()
-			}
+			m.particles = spawn()
 		}
 
 		return m, animate()

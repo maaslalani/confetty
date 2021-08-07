@@ -4,7 +4,7 @@ import (
 	"math"
 )
 
-type Position Vector
+type Position Point
 type Velocity Vector
 type Acceleration Vector
 
@@ -30,7 +30,17 @@ type Vector struct {
 	Y float64
 }
 
-func New(pos, vel, acc Vector, fps float64) *Physics {
+type Point struct {
+	X float64
+	Y float64
+}
+
+// Distance calculates the euclidean distance between two points
+func (a Point) Distance(b Point) float64 {
+	return math.Sqrt(math.Pow(b.X-a.X, 2) + math.Pow(b.Y-a.Y, 2))
+}
+
+func New(pos Point, vel, acc Vector, fps float64) *Physics {
 	motion := Motion{
 		pos: Position(pos),
 		vel: Velocity(vel),
@@ -50,6 +60,10 @@ func (p *Physics) Reset() {
 func (p *Physics) Update() {
 	p.current.pos.Y, p.current.vel.Y = p.current.pos.Y+p.current.vel.Y/p.fps, p.current.vel.Y+p.current.acc.Y/p.fps
 	p.current.pos.X, p.current.vel.X = p.current.pos.X+p.current.vel.X/p.fps, p.current.vel.X+p.current.acc.X/p.fps
+}
+
+func (p Physics) Displacement() float64 {
+	return Point(p.initial.pos).Distance(Point(p.current.pos))
 }
 
 func (p Physics) PosX() int {

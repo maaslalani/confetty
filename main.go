@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/maaslalani/confetty/pkg/confetty"
+	"github.com/maaslalani/confetty/confetty"
 
 	tea "github.com/charmbracelet/bubbletea"
 )

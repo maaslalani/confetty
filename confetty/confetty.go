@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/maaslalani/confetty/pkg/array"
-	"github.com/maaslalani/confetty/pkg/physics"
+	"github.com/maaslalani/confetty/array"
+	"github.com/maaslalani/confetty/physics"
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"

@@ -8,4 +8,4 @@ Confetti inside your terminal.
 
 #### Why?
 
-¯\_(ツ)_/¯
+¯\\\_(ツ)\_/¯

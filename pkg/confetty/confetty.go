@@ -2,10 +2,11 @@ package confetty
 
 import (
 	"fmt"
-	"math"
 	"math/rand"
 	"strings"
 	"time"
+
+	"github.com/maaslalani/confetty/pkg/physics"
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
@@ -46,26 +47,9 @@ type model struct {
 }
 
 type Particle struct {
-	char  string
-	acc   Acceleration
-	vel   Velocity
-	pos   Position
-	color lipgloss.Color
-}
-
-type Position struct {
-	x float64
-	y float64
-}
-
-type Velocity struct {
-	x float64
-	y float64
-}
-
-type Acceleration struct {
-	x float64
-	y float64
+	char    string
+	physics *physics.Physics
+	color   lipgloss.Color
 }
 
 var characters = []string{"▄", "▀", "█"} // "▓", "▒", "░"}
@@ -84,9 +68,12 @@ func InitialModel() model {
 
 		p := &Particle{
 			char: lipgloss.NewStyle().Foreground(colors[rand.Intn(len(colors))]).Render(characters[rand.Intn(len(characters))]),
-			pos:  Position{x: x, y: y},
-			vel:  Velocity{x: (rand.Float64() - 0.5) * 100, y: (rand.Float64() - 0.5) * 100},
-			acc:  Acceleration{x: 0, y: 9.8},
+			physics: physics.New(
+				physics.Vector{X: x, Y: y},
+				physics.Vector{X: (rand.Float64() - 0.5) * 100, Y: (rand.Float64() - 0.5) * 100},
+				physics.Vector(physics.Gravity),
+				fps,
+			),
 		}
 		particles = append(particles, p)
 	}
@@ -104,8 +91,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, tea.Quit
 	case frameMsg:
 		for _, p := range m.particles {
-			p.pos.y, p.vel.y = p.pos.y+p.vel.y/fps, p.vel.y+p.acc.y/fps
-			p.pos.x, p.vel.x = p.pos.x+p.vel.x/fps, p.vel.x+p.acc.x/fps
+			p.physics.Update()
 		}
 		return m, animate()
 	case tea.WindowSizeMsg:
@@ -127,8 +113,8 @@ func (m model) View() string {
 		grid[i] = make([]string, m.viewport.Width)
 	}
 	for _, p := range m.particles {
-		y := int(math.Round(p.pos.y))
-		x := int(math.Round(p.pos.x))
+		y := p.physics.PosY()
+		x := p.physics.PosX()
 		if y < 0 || x < 0 || x >= m.viewport.Width-1 || y >= m.viewport.Height-1 {
 			continue
 		}

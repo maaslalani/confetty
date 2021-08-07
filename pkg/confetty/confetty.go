@@ -22,7 +22,8 @@ const (
 
 var (
 	colors     = []string{"#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"}
-	characters = []string{"▄", "▀"} // "█", "▓", "▒", "░"}
+	characters = []string{"█", "▓", "▒", "░", "▄", "▀"}
+	// characters = []string{"▄", "▀"}
 )
 
 type frameMsg time.Time
@@ -125,7 +126,14 @@ func (m model) View() string {
 		y := p.physics.PosY()
 		x := p.physics.PosX()
 
-		if y < 0 || y >= m.viewport.Height-1 || x < 0 || x >= m.viewport.Width-1 {
+		if y < 0 {
+			continue
+		}
+
+		// Particle is out of view
+		if y >= m.viewport.Height-1 || x < 0 || x >= m.viewport.Width-1 {
+			// loop motion
+			p.physics.Reset()
 			continue
 		}
 

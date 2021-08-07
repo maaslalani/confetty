@@ -96,9 +96,25 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		// frame animation
 	case frameMsg:
+		particlesVisible := numParticles
 		for _, p := range m.particles {
 			p.physics.Update()
+
+			y := p.physics.PosY()
+			x := p.physics.PosX()
+
+			// Particle is out of view
+			if y >= m.viewport.Height-1 || x < 0 || x >= m.viewport.Width-1 {
+				particlesVisible -= 1
+			}
 		}
+
+		if particlesVisible <= 0 {
+			for _, p := range m.particles {
+				p.physics.Reset()
+			}
+		}
+
 		return m, animate()
 
 	case tea.WindowSizeMsg:
@@ -113,10 +129,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 // View displays all the particles on the screen
 func (m model) View() string {
-	if m.viewport.Height <= 0 || m.viewport.Width <= 0 {
+	height := m.viewport.Height
+	width := m.viewport.Width
+	if height <= 0 || width <= 0 {
 		return ""
 	}
+
 	var out strings.Builder
+
 	grid := make([][]string, m.viewport.Height)
 	for i := range grid {
 		grid[i] = make([]string, m.viewport.Width)
@@ -126,14 +146,7 @@ func (m model) View() string {
 		y := p.physics.PosY()
 		x := p.physics.PosX()
 
-		if y < 0 {
-			continue
-		}
-
-		// Particle is out of view
-		if y >= m.viewport.Height-1 || x < 0 || x >= m.viewport.Width-1 {
-			// loop motion
-			p.physics.Reset()
+		if y < 0 || x < 0 || y >= height-1 || x >= width-1 {
 			continue
 		}
 

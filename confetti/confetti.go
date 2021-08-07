@@ -1,4 +1,4 @@
-package confetty
+package confetti
 
 import (
 	"fmt"

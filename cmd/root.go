@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/maaslalani/confetty/confetty"
+	"github.com/maaslalani/confetty/confetti"
 	"github.com/maaslalani/confetty/fireworks"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -16,7 +16,7 @@ var rootCmd = &cobra.Command{
 	Short: "Confetti in your TTY",
 	Long:  `Confetty gives your confetti and fireworks in your terminal`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		p := tea.NewProgram(confetty.InitialModel(), tea.WithAltScreen())
+		p := tea.NewProgram(confetti.InitialModel(), tea.WithAltScreen())
 		return p.Start()
 	},
 }
@@ -26,7 +26,7 @@ var confettiCmd = &cobra.Command{
 	Aliases: []string{"confetty"},
 	Short:   "Confetti in your TTY",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		p := tea.NewProgram(confetty.InitialModel(), tea.WithAltScreen())
+		p := tea.NewProgram(confetti.InitialModel(), tea.WithAltScreen())
 		return p.Start()
 	},
 }

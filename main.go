@@ -1,0 +1,18 @@
+package main
+
+import (
+	"fmt"
+	"os"
+
+	"github.com/maaslalani/confetty/pkg/confetty"
+
+	tea "github.com/charmbracelet/bubbletea"
+)
+
+func main() {
+	p := tea.NewProgram(confetty.InitialModel())
+	if err := p.Start(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+}

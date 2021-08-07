@@ -30,9 +30,9 @@ func animate() tea.Cmd {
 	})
 }
 
-func waitASec(ms int) tea.Cmd {
+func wait(d time.Duration) tea.Cmd {
 	return func() tea.Msg {
-		time.Sleep(time.Millisecond * time.Duration(ms))
+		time.Sleep(d)
 		return nil
 	}
 }
@@ -79,7 +79,7 @@ func InitialModel() model {
 }
 
 func (m model) Init() tea.Cmd {
-	return tea.Sequentially(waitASec(500), animate())
+	return tea.Sequentially(wait(time.Second), animate())
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {

@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/maaslalani/confetty/pkg/array"
 	"github.com/maaslalani/confetty/pkg/physics"
 
 	"github.com/charmbracelet/bubbles/viewport"
@@ -14,17 +15,12 @@ import (
 	"golang.org/x/term"
 )
 
-const (
-	fps = 60.0
-)
+const fps = 60.0
 
-var colors = []lipgloss.Color{
-	lipgloss.Color("#a864fd"),
-	lipgloss.Color("#29cdff"),
-	lipgloss.Color("#78ff44"),
-	lipgloss.Color("#ff718d"),
-	lipgloss.Color("#fdff6a"),
-}
+var (
+	colors     = []string{"#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"}
+	characters = []string{"▄", "▀", "█"} // "▓", "▒", "░"}
+)
 
 type frameMsg time.Time
 
@@ -52,8 +48,6 @@ type Particle struct {
 	color   lipgloss.Color
 }
 
-var characters = []string{"▄", "▀", "█"} // "▓", "▒", "░"}
-
 func InitialModel() model {
 	particles := []*Particle{}
 
@@ -67,14 +61,17 @@ func InitialModel() model {
 		y := float64(height / 2)
 
 		p := &Particle{
-			char: lipgloss.NewStyle().Foreground(colors[rand.Intn(len(colors))]).Render(characters[rand.Intn(len(characters))]),
 			physics: physics.New(
 				physics.Vector{X: x, Y: y},
 				physics.Vector{X: (rand.Float64() - 0.5) * 100, Y: (rand.Float64() - 0.5) * 100},
 				physics.Vector(physics.Gravity),
 				fps,
 			),
+			char: lipgloss.NewStyle().
+				Foreground(lipgloss.Color(array.Sample(colors))).
+				Render(array.Sample(characters)),
 		}
+
 		particles = append(particles, p)
 	}
 

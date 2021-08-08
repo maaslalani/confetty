@@ -58,8 +58,11 @@ func (p *Physics) Reset() {
 }
 
 func (p *Physics) Update() {
-	p.current.pos.Y, p.current.vel.Y = p.current.pos.Y+p.current.vel.Y/p.fps, p.current.vel.Y+p.current.acc.Y/p.fps
-	p.current.pos.X, p.current.vel.X = p.current.pos.X+p.current.vel.X/p.fps, p.current.vel.X+p.current.acc.X/p.fps
+	p.current.pos.X += p.current.vel.X / p.fps
+	p.current.pos.Y += p.current.vel.Y / p.fps
+
+	p.current.vel.X += p.current.acc.X / p.fps
+	p.current.vel.Y += p.current.acc.Y / p.fps
 }
 
 func (p Physics) Displacement() float64 {

@@ -45,6 +45,7 @@ func init() {
 	rootCmd.AddCommand(fireworksCmd)
 }
 
+// Execute starts the confetty command-line interface
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)

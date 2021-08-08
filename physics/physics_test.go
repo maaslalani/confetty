@@ -2,9 +2,19 @@ package physics_test
 
 import (
 	"testing"
+	"time"
 
 	. "github.com/maaslalani/confetty/physics"
 )
+
+const fps = 60
+
+func simulate(p *Physics, d time.Duration) {
+	frames := int(d.Seconds() * fps)
+	for i := 0; i < frames; i++ {
+		p.Update()
+	}
+}
 
 func TestNew(t *testing.T) {
 	x := 8
@@ -21,7 +31,6 @@ func TestNew(t *testing.T) {
 }
 
 func TestUpdate(t *testing.T) {
-	fps := 60
 	physics := New(Point{0, 0}, Vector{5, 5}, Vector(Gravity), float64(fps))
 
 	// coordinates is the location at which the object should be
@@ -37,10 +46,7 @@ func TestUpdate(t *testing.T) {
 	}
 
 	for _, c := range coordinates {
-		// 1 second of simulation
-		for i := 0; i < fps; i++ {
-			physics.Update()
-		}
+		simulate(physics, time.Second)
 
 		x := physics.PosX()
 		y := physics.PosY()
@@ -67,15 +73,10 @@ func TestDisplacement(t *testing.T) {
 		{x: 0, y: 0, vel: Vector{1, 1}, d: 1.414213562373097},
 	}
 
-	fps := 60
-
 	for _, tc := range tt {
 		physics := New(Point{float64(tc.x), float64(tc.y)}, tc.vel, Vector{}, float64(fps))
 
-		// 1 second of simulation
-		for i := 0; i < fps; i++ {
-			physics.Update()
-		}
+		simulate(physics, time.Second)
 
 		if physics.Displacement() != tc.d {
 			t.Log(physics.Displacement())
@@ -88,14 +89,10 @@ func TestReset(t *testing.T) {
 	x := 5
 	y := 10
 	vel := Vector{20, 20}
-	fps := 60
 
 	physics := New(Point{float64(x), float64(y)}, vel, Vector(Gravity), float64(fps))
 
-	// 1 second of simulation
-	for i := 0; i < fps; i++ {
-		physics.Update()
-	}
+	simulate(physics, time.Second)
 
 	// store the current position after 1 second of simulation we will simulate 1
 	// second again and ensure that the object reaches the same position, we
@@ -114,13 +111,10 @@ func TestReset(t *testing.T) {
 		t.Fatal("expected y to be reset")
 	}
 
-	// 1 second of simulation
 	// here we are simply checking that the object reaches the same position
 	// after being reset in the same amount of time. This ensures velocity and
 	// acceleration were reset without checking them explicitly
-	for i := 0; i < fps; i++ {
-		physics.Update()
-	}
+	simulate(physics, time.Second)
 
 	if physics.PosX() != cx {
 		t.Fatal("expected simulation to be repeatable")

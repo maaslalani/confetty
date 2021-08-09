@@ -86,7 +86,12 @@ func (m model) Init() tea.Cmd {
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
-		return m, tea.Quit
+		switch msg.String() {
+		case "ctrl+c", "q":
+			return m, tea.Quit
+		}
+		m.system.Particles = spawn(m.system.Frame.Width, m.system.Frame.Height)
+		return m, nil
 	case frameMsg:
 		m.system.Update()
 		return m, animate()

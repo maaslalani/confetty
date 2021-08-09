@@ -1,4 +1,4 @@
-package fireworks
+package simulation
 
 import (
 	"fmt"

@@ -1,5 +1,3 @@
-// TODO: Lots of code duplication between fireworks and confetti extract to a
-// `particle system` package
 package fireworks
 
 import (
@@ -9,6 +7,7 @@ import (
 
 	"github.com/maaslalani/confetty/array"
 	"github.com/maaslalani/confetty/physics"
+	"github.com/maaslalani/confetty/simulation"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -35,20 +34,20 @@ func animate() tea.Cmd {
 }
 
 type model struct {
-	system *System
+	system *simulation.System
 }
 
-func spawn(width, height int) []Particle {
+func spawn(width, height int) []simulation.Particle {
 	color := lipgloss.Color(array.Sample(colors))
 	v := float64(rand.Intn(10) + 20.0)
 
-	particles := []Particle{}
+	particles := []simulation.Particle{}
 
 	x := rand.Float64() * float64(width)
 	y := rand.Float64() * float64(height)
 
 	for i := 0; i < numParticles; i++ {
-		p := Particle{
+		p := simulation.Particle{
 			Physics: physics.New(
 				physics.Point{X: x, Y: y},
 				physics.Vector{X: math.Cos(float64(i)) * v, Y: math.Sin(float64(i)) * v / 2},
@@ -68,9 +67,9 @@ func InitialModel() model {
 		panic(err)
 	}
 
-	return model{system: &System{
+	return model{system: &simulation.System{
 		Particles: spawn(width, height),
-		Frame: Frame{
+		Frame: simulation.Frame{
 			Width:  width,
 			Height: height,
 		},

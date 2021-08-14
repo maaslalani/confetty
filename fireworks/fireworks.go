@@ -37,7 +37,7 @@ type model struct {
 	system *simulation.System
 }
 
-func spawn(width, height int) []simulation.Particle {
+func Spawn(width, height int) []simulation.Particle {
 	color := lipgloss.Color(array.Sample(colors))
 	v := float64(rand.Intn(10) + 20.0)
 
@@ -68,7 +68,7 @@ func InitialModel() model {
 	}
 
 	return model{system: &simulation.System{
-		Particles: spawn(width, height),
+		Particles: Spawn(width, height),
 		Frame: simulation.Frame{
 			Width:  width,
 			Height: height,
@@ -90,7 +90,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c", "q":
 			return m, tea.Quit
 		}
-		m.system.Particles = spawn(m.system.Frame.Width, m.system.Frame.Height)
+		m.system.Particles = Spawn(m.system.Frame.Width, m.system.Frame.Height)
 		return m, nil
 	case frameMsg:
 		m.system.Update()

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/maaslalani/confetty/physics"
+	"github.com/charmbracelet/harmonica"
 )
 
 type System struct {
@@ -14,7 +14,7 @@ type System struct {
 
 type Particle struct {
 	Char    string
-	Physics *physics.Physics
+	Physics *harmonica.Projectile
 	Hidden  bool
 }
 
@@ -39,8 +39,8 @@ func (s *System) Update() {
 }
 
 func (s *System) Visible(p Particle) bool {
-	y := p.Physics.PosY()
-	x := p.Physics.PosX()
+	y := int(p.Physics.Position().Y)
+	x := int(p.Physics.Position().X)
 	return y >= 0 && y < s.Frame.Height-1 && x >= 0 && x < s.Frame.Width-1
 }
 
@@ -52,7 +52,7 @@ func (s *System) Render() string {
 	}
 	for _, p := range s.Particles {
 		if s.Visible(p) {
-			plane[p.Physics.PosY()][p.Physics.PosX()] = p.Char
+			plane[int(p.Physics.Position().Y)][int(p.Physics.Position().X)] = p.Char
 		}
 	}
 	for i := range plane {

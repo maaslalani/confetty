@@ -4,8 +4,8 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/charmbracelet/harmonica"
 	"github.com/maaslalani/confetty/array"
-	"github.com/maaslalani/confetty/physics"
 	"github.com/maaslalani/confetty/simulation"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -43,11 +43,11 @@ func Spawn(width, height int) []simulation.Particle {
 		y := float64(0)
 
 		p := simulation.Particle{
-			Physics: physics.New(
-				physics.Point{X: x + (float64(width/4) * (rand.Float64() - 0.5)), Y: y},
-				physics.Vector{X: (rand.Float64() - 0.5) * 100, Y: rand.Float64() * 50},
-				physics.Vector(physics.Gravity),
-				framesPerSecond,
+			Physics: harmonica.NewProjectile(
+				harmonica.FPS(framesPerSecond),
+				harmonica.Point{X: x + (float64(width/4) * (rand.Float64() - 0.5)), Y: y, Z: 0},
+				harmonica.Vector{X: (rand.Float64() - 0.5) * 100, Y: rand.Float64() * 50, Z: 0},
+				harmonica.Vector(harmonica.TerminalGravity),
 			),
 			Char: lipgloss.NewStyle().
 				Foreground(lipgloss.Color(array.Sample(colors))).

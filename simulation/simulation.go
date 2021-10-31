@@ -29,8 +29,13 @@ func RemoveParticleFromArray(s []Particle, i int) []Particle {
 }
 
 func (s *System) Update() {
-	for _, p := range s.Particles {
-		p.Physics.Update()
+	for i := len(s.Particles) - 1; i >= 0; i-- {
+		p := s.Particles[i].Physics.Position()
+		if p.X > float64(s.Frame.Width) || p.X < 0 || p.Y > float64(s.Frame.Height) {
+			s.Particles = RemoveParticleFromArray(s.Particles, i)
+		} else {
+			s.Particles[i].Physics.Update()
+		}
 	}
 }
 

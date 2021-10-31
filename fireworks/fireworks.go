@@ -37,7 +37,7 @@ type model struct {
 	system *simulation.System
 }
 
-func SpawnShoot(width, height int) simulation.Particle {
+func SpawnShoot(width, height int) *simulation.Particle {
 	color := lipgloss.Color(array.Sample(colors))
 	v := float64(rand.Intn(15) + 15.0)
 
@@ -55,14 +55,14 @@ func SpawnShoot(width, height int) simulation.Particle {
 		Shooting:      true,
 		ExplosionCall: SpawnExplosion,
 	}
-	return p
+	return &p
 }
 
-func SpawnExplosion(x, y float64, width, height int) []simulation.Particle {
+func SpawnExplosion(x, y float64, width, height int) []*simulation.Particle {
 	color := lipgloss.Color(array.Sample(colors))
 	v := float64(rand.Intn(10) + 20.0)
 
-	particles := []simulation.Particle{}
+	particles := []*simulation.Particle{}
 
 	for i := 0; i < numParticles; i++ {
 		p := simulation.Particle{
@@ -75,7 +75,7 @@ func SpawnExplosion(x, y float64, width, height int) []simulation.Particle {
 			Char:     lipgloss.NewStyle().Foreground(color).Render(array.Sample(characters)),
 			Shooting: false,
 		}
-		particles = append(particles, p)
+		particles = append(particles, &p)
 	}
 	return particles
 }
@@ -87,7 +87,7 @@ func InitialModel() model {
 	}
 
 	return model{system: &simulation.System{
-		Particles: []simulation.Particle{SpawnShoot(width, height)},
+		Particles: []*simulation.Particle{SpawnShoot(width, height)},
 		Frame: simulation.Frame{
 			Width:  width,
 			Height: height,

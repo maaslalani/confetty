@@ -35,8 +35,8 @@ type model struct {
 	system *simulation.System
 }
 
-func Spawn(width, height int) []simulation.Particle {
-	particles := []simulation.Particle{}
+func Spawn(width, height int) []*simulation.Particle {
+	particles := []*simulation.Particle{}
 	for i := 0; i < numParticles; i++ {
 		x := float64(width / 2)
 		y := float64(0)
@@ -53,7 +53,7 @@ func Spawn(width, height int) []simulation.Particle {
 				Render(array.Sample(characters)),
 		}
 
-		particles = append(particles, p)
+		particles = append(particles, &p)
 	}
 	return particles
 }

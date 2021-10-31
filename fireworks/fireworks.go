@@ -20,12 +20,11 @@ const (
 )
 
 var (
-	colors     = []string{"#fdff6a", "#ff718d"}
+	colors     = []string{"#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"}
 	characters = []string{"+", "*", "•"}
 )
 
 type frameMsg time.Time
-type fireworkMsg time.Time
 
 func animate() tea.Cmd {
 	return tea.Tick(time.Second/framesPerSecond, func(t time.Time) tea.Msg {
@@ -90,10 +89,19 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c", "q":
 			return m, tea.Quit
 		}
-		m.system.Particles = Spawn(m.system.Frame.Width, m.system.Frame.Height)
+		m.system.Particles = append(m.system.Particles, Spawn(m.system.Frame.Width, m.system.Frame.Height)...)
+
 		return m, nil
 	case frameMsg:
 		m.system.Update()
+
+		for i := len(m.system.Particles) - 1; i >= 0; i-- {
+			p := m.system.Particles[i].Physics.Position()
+			if p.X > float64(m.system.Frame.Width) || p.X < 0 || p.Y > float64(m.system.Frame.Height) {
+				m.system.Particles = simulation.RemoveParticleFromArray(m.system.Particles, i)
+			}
+		}
+
 		return m, animate()
 	case tea.WindowSizeMsg:
 		m.system.Frame.Width = msg.Width

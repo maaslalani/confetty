@@ -23,17 +23,13 @@ type Frame struct {
 	Height int
 }
 
+func RemoveParticleFromArray(s []Particle, i int) []Particle {
+	s[i] = s[len(s)-1]
+	return s[:len(s)-1]
+}
+
 func (s *System) Update() {
 	for _, p := range s.Particles {
-		if p.Hidden {
-			continue
-		}
-
-		if !s.Visible(p) {
-			p.Hidden = true
-			continue
-		}
-
 		p.Physics.Update()
 	}
 }

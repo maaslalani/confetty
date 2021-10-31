@@ -5,7 +5,6 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/charmbracelet/harmonica"
 	"github.com/maaslalani/confetty/array"
 	"github.com/maaslalani/confetty/simulation"
 
@@ -22,6 +21,8 @@ const (
 var (
 	colors     = []string{"#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"}
 	characters = []string{"+", "*", "•"}
+	head_char  = "▄"
+	tail_char  = "│"
 )
 
 type frameMsg time.Time
@@ -36,24 +37,43 @@ type model struct {
 	system *simulation.System
 }
 
-func Spawn(width, height int) []simulation.Particle {
+func SpawnShoot(width, height int) simulation.Particle {
+	color := lipgloss.Color(array.Sample(colors))
+	v := float64(rand.Intn(15) + 15.0)
+
+	x := rand.Float64() * float64(width)
+
+	p := simulation.Particle{
+		Physics: simulation.NewProjectile(
+			simulation.FPS(framesPerSecond),
+			simulation.Point{X: x, Y: float64(height)},
+			simulation.Vector{X: 0, Y: -v},
+			simulation.Vector(simulation.TerminalGravity),
+		),
+		Char:          lipgloss.NewStyle().Foreground(color).Render(head_char),
+		TailChar:      lipgloss.NewStyle().Foreground(color).Render(tail_char),
+		Shooting:      true,
+		ExplosionCall: SpawnExplosion,
+	}
+	return p
+}
+
+func SpawnExplosion(x, y float64, width, height int) []simulation.Particle {
 	color := lipgloss.Color(array.Sample(colors))
 	v := float64(rand.Intn(10) + 20.0)
 
 	particles := []simulation.Particle{}
 
-	x := rand.Float64() * float64(width)
-	y := rand.Float64() * float64(height)
-
 	for i := 0; i < numParticles; i++ {
 		p := simulation.Particle{
-			Physics: harmonica.NewProjectile(
-				harmonica.FPS(framesPerSecond),
-				harmonica.Point{X: x, Y: y},
-				harmonica.Vector{X: math.Cos(float64(i)) * v, Y: math.Sin(float64(i)) * v / 2},
-				harmonica.Vector(harmonica.TerminalGravity),
+			Physics: simulation.NewProjectile(
+				simulation.FPS(framesPerSecond),
+				simulation.Point{X: x, Y: y},
+				simulation.Vector{X: math.Cos(float64(i)) * v, Y: math.Sin(float64(i)) * v / 2},
+				simulation.Vector(simulation.TerminalGravity),
 			),
-			Char: lipgloss.NewStyle().Foreground(color).Render(array.Sample(characters)),
+			Char:     lipgloss.NewStyle().Foreground(color).Render(array.Sample(characters)),
+			Shooting: false,
 		}
 		particles = append(particles, p)
 	}
@@ -67,7 +87,7 @@ func InitialModel() model {
 	}
 
 	return model{system: &simulation.System{
-		Particles: Spawn(width, height),
+		Particles: []simulation.Particle{SpawnShoot(width, height)},
 		Frame: simulation.Frame{
 			Width:  width,
 			Height: height,
@@ -89,7 +109,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case "ctrl+c", "q":
 			return m, tea.Quit
 		}
-		m.system.Particles = append(m.system.Particles, Spawn(m.system.Frame.Width, m.system.Frame.Height)...)
+		m.system.Particles = append(m.system.Particles, SpawnShoot(m.system.Frame.Width, m.system.Frame.Height))
 
 		return m, nil
 	case frameMsg:

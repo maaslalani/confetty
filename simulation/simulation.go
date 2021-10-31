@@ -8,7 +8,7 @@ import (
 
 type System struct {
 	Frame     Frame
-	Particles []Particle
+	Particles []*Particle
 }
 
 type Particle struct {
@@ -17,7 +17,7 @@ type Particle struct {
 	Physics       *Projectile
 	Hidden        bool
 	Shooting      bool
-	ExplosionCall func(x, y float64, width, height int) []Particle
+	ExplosionCall func(x, y float64, width, height int) []*Particle
 }
 
 type Frame struct {
@@ -29,7 +29,8 @@ func FPS(n int) float64 {
 	return (time.Second / time.Duration(n)).Seconds()
 }
 
-func RemoveParticleFromArray(s []Particle, i int) []Particle {
+func RemoveParticleFromArray(s []*Particle, i int) []*Particle {
+	s[i] = nil
 	s[i] = s[len(s)-1]
 	return s[:len(s)-1]
 }
@@ -56,7 +57,7 @@ func (s *System) Update() {
 	}
 }
 
-func (s *System) Visible(p Particle) bool {
+func (s *System) Visible(p *Particle) bool {
 	y := int(p.Physics.Position.Y)
 	x := int(p.Physics.Position.X)
 	return !p.Hidden && y >= 0 && y < s.Frame.Height-1 && x >= 0 && x < s.Frame.Width-1

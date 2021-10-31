@@ -3,7 +3,6 @@ module github.com/maaslalani/confetty
 go 1.16
 
 require (
-	github.com/charmbracelet/bubbles v0.8.0
 	github.com/charmbracelet/bubbletea v0.17.0
 	github.com/charmbracelet/harmonica v0.1.1-0.20211027165653-ff7be1c0cd31
 	github.com/charmbracelet/lipgloss v0.4.0

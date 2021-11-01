@@ -64,7 +64,10 @@ func InitialModel() model {
 	if err != nil {
 		panic(err)
 	}
+	return InitialModelWithSize(width, height)
+}
 
+func InitialModelWithSize(width, height int) model {
 	return model{system: &simulation.System{
 		Particles: Spawn(width, height),
 		Frame: simulation.Frame{

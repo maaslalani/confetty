@@ -11,13 +11,14 @@ import (
 
 func main() {
 	var err error
+	var model tea.Model
 	if len(os.Args) > 1 && os.Args[1] == "fireworks" {
-		p := tea.NewProgram(fireworks.InitialModel(), tea.WithAltScreen())
-		err = p.Start()
+		model = fireworks.InitialModel()
 	} else {
-		p := tea.NewProgram(confetti.InitialModel(), tea.WithAltScreen())
-		err = p.Start()
+		model = confetti.InitialModel()
 	}
+	p := tea.NewProgram(model, tea.WithAltScreen())
+	err = p.Start()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)

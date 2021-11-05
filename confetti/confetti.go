@@ -9,7 +9,6 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"golang.org/x/term"
 )
 
 const (
@@ -58,12 +57,7 @@ func Spawn(width, height int) []*simulation.Particle {
 	return particles
 }
 
-func InitialModel() model {
-	width, height, err := term.GetSize(0)
-	if err != nil {
-		panic(err)
-	}
-
+func InitialModelWithSize(width, height int) model {
 	return model{system: &simulation.System{
 		Particles: Spawn(width, height),
 		Frame: simulation.Frame{

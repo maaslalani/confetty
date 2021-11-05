@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 	"time"
+
+	"github.com/charmbracelet/harmonica"
 )
 
 type System struct {
@@ -14,7 +16,7 @@ type System struct {
 type Particle struct {
 	Char          string
 	TailChar      string
-	Physics       *Projectile
+	Physics       *harmonica.Projectile
 	Hidden        bool
 	Shooting      bool
 	ExplosionCall func(x, y float64, width, height int) []*Particle
@@ -38,13 +40,13 @@ func RemoveParticleFromArray(s []*Particle, i int) []*Particle {
 func (s *System) Update() {
 	for i := len(s.Particles) - 1; i >= 0; i-- {
 		p := s.Particles[i]
-		pos := p.Physics.Position
+		pos := p.Physics.Position()
 
 		// if the shooting particle is slow enough then hide it and call the explosion function
-		if !p.Hidden && p.Shooting && p.Physics.Velocity.Y > -3 {
+		if !p.Hidden && p.Shooting && p.Physics.Velocity().Y > -3 {
 			p.Hidden = true
 			if p.ExplosionCall != nil {
-				s.Particles = append(s.Particles, p.ExplosionCall(p.Physics.Position.X, p.Physics.Position.Y, s.Frame.Width, s.Frame.Height)...)
+				s.Particles = append(s.Particles, p.ExplosionCall(pos.X, pos.Y, s.Frame.Width, s.Frame.Height)...)
 			}
 		}
 
@@ -58,8 +60,9 @@ func (s *System) Update() {
 }
 
 func (s *System) Visible(p *Particle) bool {
-	y := int(p.Physics.Position.Y)
-	x := int(p.Physics.Position.X)
+	pos := p.Physics.Position()
+	x := int(pos.X)
+	y := int(pos.Y)
 	return !p.Hidden && y >= 0 && y < s.Frame.Height-1 && x >= 0 && x < s.Frame.Width-1
 }
 
@@ -71,13 +74,14 @@ func (s *System) Render() string {
 	}
 	for _, p := range s.Particles {
 		if s.Visible(p) {
-			plane[int(p.Physics.Position.Y)][int(p.Physics.Position.X)] = p.Char
+			pos := p.Physics.Position()
+			plane[int(pos.Y)][int(pos.X)] = p.Char
 			if p.Shooting {
-				l := -int(p.Physics.Velocity.Y)
+				l := -int(p.Physics.Velocity().Y)
 				for i := 1; i < l; i++ {
-					y := int(p.Physics.Position.Y) + i
+					y := int(pos.Y) + i
 					if y > 0 && y < s.Frame.Height-1 {
-						plane[y][int(p.Physics.Position.X)] = p.TailChar
+						plane[y][int(pos.X)] = p.TailChar
 					}
 				}
 			}

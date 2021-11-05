@@ -9,6 +9,7 @@ import (
 	"github.com/maaslalani/confetty/simulation"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/harmonica"
 	"github.com/charmbracelet/lipgloss"
 )
 
@@ -20,8 +21,8 @@ const (
 var (
 	colors     = []string{"#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"}
 	characters = []string{"+", "*", "•"}
-	head_char  = "▄"
-	tail_char  = "│"
+	head       = "▄"
+	tail       = "│"
 )
 
 type frameMsg time.Time
@@ -39,18 +40,16 @@ type model struct {
 func SpawnShoot(width, height int) *simulation.Particle {
 	color := lipgloss.Color(array.Sample(colors))
 	v := float64(rand.Intn(15) + 15.0)
-
 	x := rand.Float64() * float64(width)
-
 	p := simulation.Particle{
-		Physics: simulation.NewProjectile(
-			simulation.FPS(framesPerSecond),
-			simulation.Point{X: x, Y: float64(height)},
-			simulation.Vector{X: 0, Y: -v},
-			simulation.Vector(simulation.TerminalGravity),
+		Physics: harmonica.NewProjectile(
+			harmonica.FPS(framesPerSecond),
+			harmonica.Point{X: x, Y: float64(height)},
+			harmonica.Vector{X: 0, Y: -v},
+			harmonica.TerminalGravity,
 		),
-		Char:          lipgloss.NewStyle().Foreground(color).Render(head_char),
-		TailChar:      lipgloss.NewStyle().Foreground(color).Render(tail_char),
+		Char:          lipgloss.NewStyle().Foreground(color).Render(head),
+		TailChar:      lipgloss.NewStyle().Foreground(color).Render(tail),
 		Shooting:      true,
 		ExplosionCall: SpawnExplosion,
 	}
@@ -65,11 +64,11 @@ func SpawnExplosion(x, y float64, width, height int) []*simulation.Particle {
 
 	for i := 0; i < numParticles; i++ {
 		p := simulation.Particle{
-			Physics: simulation.NewProjectile(
-				simulation.FPS(framesPerSecond),
-				simulation.Point{X: x, Y: y},
-				simulation.Vector{X: math.Cos(float64(i)) * v, Y: math.Sin(float64(i)) * v / 2},
-				simulation.Vector(simulation.TerminalGravity),
+			Physics: harmonica.NewProjectile(
+				harmonica.FPS(framesPerSecond),
+				harmonica.Point{X: x, Y: y},
+				harmonica.Vector{X: math.Cos(float64(i)) * v, Y: math.Sin(float64(i)) * v / 2},
+				harmonica.TerminalGravity,
 			),
 			Char:     lipgloss.NewStyle().Foreground(color).Render(array.Sample(characters)),
 			Shooting: false,

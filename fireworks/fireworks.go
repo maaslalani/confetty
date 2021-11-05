@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	framesPerSecond = 60.0
+	framesPerSecond = 30.0
 	numParticles    = 50
 )
 

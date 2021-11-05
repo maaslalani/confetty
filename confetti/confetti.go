@@ -57,13 +57,10 @@ func Spawn(width, height int) []*simulation.Particle {
 	return particles
 }
 
-func InitialModelWithSize(width, height int) model {
+func InitialModel() model {
 	return model{system: &simulation.System{
-		Particles: Spawn(width, height),
-		Frame: simulation.Frame{
-			Width:  width,
-			Height: height,
-		},
+		Particles: []*simulation.Particle{},
+		Frame:     simulation.Frame{},
 	}}
 }
 
@@ -88,6 +85,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.system.Update()
 		return m, animate()
 	case tea.WindowSizeMsg:
+		if m.system.Frame.Width == 0 && m.system.Frame.Height == 0 {
+			// For the first frameMsg spawn a system of particles
+			m.system.Particles = Spawn(msg.Width, msg.Height)
+		}
 		m.system.Frame.Width = msg.Width
 		m.system.Frame.Height = msg.Height
 		return m, nil

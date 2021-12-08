@@ -3,6 +3,17 @@ https://user-images.githubusercontent.com/42545625/128612977-5d6e0321-9584-48b5-
 
 Confetti (or fireworks) inside your terminal.
 
+### Preview
+
+You can quickly preview `confetty` through `ssh` (thanks to [charmbracelet/wish](https://github.com/charmbracelet/wish))
+
+```bash
+# Confetti
+ssh -p 2222 ssh.caarlos0.dev
+# Fireworks
+ssh -p 2223 ssh.caarlos0.dev
+```
+
 ### Installation
 
 ```

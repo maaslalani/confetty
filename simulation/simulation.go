@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/charmbracelet/harmonica"
+	"github.com/charmbracelet/lipgloss"
 )
 
 type System struct {
@@ -15,11 +16,12 @@ type System struct {
 
 type Particle struct {
 	Char          string
+	Color         lipgloss.Color
 	TailChar      string
 	Physics       *harmonica.Projectile
 	Hidden        bool
 	Shooting      bool
-	ExplosionCall func(x, y float64, width, height int) []*Particle
+	ExplosionCall func(color lipgloss.Color, x, y float64, width, height int) []*Particle
 }
 
 type Frame struct {
@@ -46,7 +48,7 @@ func (s *System) Update() {
 		if !p.Hidden && p.Shooting && p.Physics.Velocity().Y > -3 {
 			p.Hidden = true
 			if p.ExplosionCall != nil {
-				s.Particles = append(s.Particles, p.ExplosionCall(pos.X, pos.Y, s.Frame.Width, s.Frame.Height)...)
+				s.Particles = append(s.Particles, p.ExplosionCall(p.Color, pos.X, pos.Y, s.Frame.Width, s.Frame.Height)...)
 			}
 		}
 

@@ -50,18 +50,16 @@ func SpawnShoot(width, height int) *simulation.Particle {
 		),
 		Char:          lipgloss.NewStyle().Foreground(color).Render(head),
 		TailChar:      lipgloss.NewStyle().Foreground(color).Render(tail),
+		Color:         color,
 		Shooting:      true,
 		ExplosionCall: SpawnExplosion,
 	}
 	return &p
 }
 
-func SpawnExplosion(x, y float64, width, height int) []*simulation.Particle {
-	color := lipgloss.Color(array.Sample(colors))
+func SpawnExplosion(color lipgloss.Color, x, y float64, width, height int) []*simulation.Particle {
 	v := float64(rand.Intn(10) + 20.0)
-
 	particles := []*simulation.Particle{}
-
 	for i := 0; i < numParticles; i++ {
 		p := simulation.Particle{
 			Physics: harmonica.NewProjectile(

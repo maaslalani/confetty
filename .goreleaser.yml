@@ -1,0 +1,41 @@
+project_name: confetty
+
+before:
+  hooks:
+    - go mod download
+
+release:
+  github:
+    owner: maaslalani
+    name: confetty
+
+builds:
+  - main: ./main.go
+    binary: confetty
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm64
+
+brews:
+  - tap:
+      owner: maaslalani
+      name: homebrew-tap
+    folder: Formula
+    homepage: https://github.com/maaslalani/confetty
+    description:  Confetti in your TTY
+    license: MIT
+
+nfpms:
+  - id: confetty
+    package_name: confetty
+    homepage: https://github.com/maaslalani/confetty
+    description:  Confetti in your TTY
+    license: MIT
+    formats:
+      - apk
+      - deb
+      - rpm

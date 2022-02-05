@@ -1,0 +1,25 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+      - name: Install dependencies
+        run: |
+          go mod download
+          curl -sfL https://install.goreleaser.com/github.com/goreleaser/goreleaser.sh | sh
+      - name: Test
+        run: |
+          go build
+          ./bin/goreleaser check

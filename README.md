@@ -1,5 +1,7 @@
 # ConfeTTY
-https://user-images.githubusercontent.com/42545625/128612977-5d6e0321-9584-48b5-8ff8-dd5b811211d3.mov
+
+https://user-images.githubusercontent.com/42545625/155661939-adbba8f9-93e4-456c-8abb-2348073eacce.mov
+
 
 Confetti (or fireworks) inside your terminal.
 

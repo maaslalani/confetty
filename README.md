@@ -1,14 +1,14 @@
-# ConfeTTY
+# Confetty
+
+Confetti (or fireworks) inside your terminal.
 
 <p align="center">
   <img src="./assets/confetti.gif?raw=true" alt="Confetti in your TTY" />
 </p>
 
-Confetti (or fireworks) inside your terminal.
-
 ### Preview
 
-You can quickly preview `confetty` through `ssh` (thanks to [charmbracelet/wish](https://github.com/charmbracelet/wish))
+You can preview `confetty` through `ssh` (thanks to [charmbracelet/wish](https://github.com/charmbracelet/wish))
 
 ```bash
 # Confetti

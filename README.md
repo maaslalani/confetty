@@ -1,7 +1,8 @@
 # ConfeTTY
 
-https://user-images.githubusercontent.com/42545625/155661939-adbba8f9-93e4-456c-8abb-2348073eacce.mov
-
+<p align="center">
+  <img src="./assets/confetty.gif?raw=true" alt="Confetti in your TTY" />
+</p>
 
 Confetti (or fireworks) inside your terminal.
 

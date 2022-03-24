@@ -1,7 +1,7 @@
 # ConfeTTY
 
 <p align="center">
-  <img src="./assets/confetty.gif?raw=true" alt="Confetti in your TTY" />
+  <img src="./assets/confetti.gif?raw=true" alt="Confetti in your TTY" />
 </p>
 
 Confetti (or fireworks) inside your terminal.

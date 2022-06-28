@@ -3,7 +3,7 @@
 Confetti (or fireworks) inside your terminal.
 
 <p align="center">
-  <img src="./assets/confetti.gif?raw=true" alt="Confetti in your TTY" />
+  <img src="./assets/confetty.gif?raw=true" alt="Confetti in your TTY" />
 </p>
 
 ### Preview

@@ -20,7 +20,7 @@ ssh -p 2223 ssh.caarlos0.dev
 ### Installation
 
 ```
-go install github.com/maaslalani/confetty
+go install github.com/maaslalani/confetty@latest
 ```
 
 ### Usage

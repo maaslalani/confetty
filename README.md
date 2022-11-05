@@ -12,7 +12,7 @@ Confetti (or fireworks) inside your terminal.
 
 ### Installation
 
-```
+```bash
 go install github.com/maaslalani/confetty@latest
 ```
 
@@ -20,18 +20,18 @@ go install github.com/maaslalani/confetty@latest
 
 Get `confetty` in your terminal without installing through SSH.
 
-```
+```bash
 ssh -p 2222 ssh.caarlos0.dev # Confetti
 ssh -p 2223 ssh.caarlos0.dev # Fireworks
 ```
 
 ### Usage
 
-```
+```bash
 confetty
 ```
 
-```
+```bash
 confetty fireworks
 ```
 

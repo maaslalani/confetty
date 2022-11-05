@@ -1,4 +1,4 @@
-Output firewords.gif
+Output fireworks.gif
 
 Set Padding 0
 Set FontSize 12

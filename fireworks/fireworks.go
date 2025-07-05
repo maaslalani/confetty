@@ -34,7 +34,27 @@ func animate() tea.Cmd {
 }
 
 type model struct {
-	system *simulation.System
+	system               *simulation.System
+	autoShooting         bool
+	autoShootingInterval uint
+}
+
+type simulateKeyMsg struct{}
+
+func (m model) simulateKeyTick() tea.Cmd {
+	return tea.Tick(time.Second*time.Duration(m.autoShootingInterval), func(t time.Time) tea.Msg {
+		return simulateKeyMsg{}
+	})
+}
+
+func simulateKey() tea.Cmd {
+	return func() tea.Msg {
+		return tea.KeyMsg{
+			Type:  tea.KeySpace,
+			Runes: []rune{' '},
+			Alt:   false,
+		}
+	}
 }
 
 func SpawnShoot(width, height int) *simulation.Particle {
@@ -76,15 +96,22 @@ func SpawnExplosion(color lipgloss.Color, x, y float64, width, height int) []*si
 	return particles
 }
 
-func InitialModel() model {
-	return model{system: &simulation.System{
-		Particles: []*simulation.Particle{},
-		Frame:     simulation.Frame{},
-	}}
+func InitialModel(autoShooting bool, autoShootingInterval uint) model {
+	return model{
+		system: &simulation.System{
+			Particles: []*simulation.Particle{},
+			Frame:     simulation.Frame{},
+		},
+		autoShooting:         autoShooting,
+		autoShootingInterval: autoShootingInterval,
+	}
 }
 
 // Init initializes the confetti after a small delay
 func (m model) Init() tea.Cmd {
+	if m.autoShooting {
+		return tea.Batch(animate(), m.simulateKeyTick())
+	}
 	return animate()
 }
 
@@ -98,8 +125,9 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		}
 		m.system.Particles = append(m.system.Particles, SpawnShoot(m.system.Frame.Width, m.system.Frame.Height))
-
 		return m, nil
+	case simulateKeyMsg:
+		return m, tea.Batch(simulateKey(), m.simulateKeyTick())
 	case frameMsg:
 		m.system.Update()
 		return m, animate()

@@ -32,7 +32,11 @@ confetty
 ```
 
 ```bash
-confetty fireworks
+confetty -m fireworks
+```
+
+```bash
+confetty -m fireworks -a -i 2
 ```
 
 Press any key to cause more confetti / fireworks to appear.

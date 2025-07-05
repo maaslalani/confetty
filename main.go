@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 
@@ -12,13 +13,23 @@ import (
 func main() {
 	var err error
 	var model tea.Model
-	if len(os.Args) > 1 && os.Args[1] == "fireworks" {
-		model = fireworks.InitialModel()
+	modelType := flag.String("m", "confetti", "model type: confetti|fireworks")
+	autoShooting := flag.Bool("a", false, "enable auto shooting")
+	autoShootingInterval := flag.Uint("i", 1, "auto shooting interval 1~10 sec")
+	flag.Parse()
+	if *autoShootingInterval < 1 {
+		*autoShootingInterval = 1
+	}
+	if *autoShootingInterval > 10 {
+		*autoShootingInterval = 10
+	}
+	if *modelType == "fireworks" {
+		model = fireworks.InitialModel(*autoShooting, *autoShootingInterval)
 	} else {
-		model = confetti.InitialModel()
+		model = confetti.InitialModel(*autoShooting, *autoShootingInterval)
 	}
 	p := tea.NewProgram(model, tea.WithAltScreen())
-	err = p.Start()
+	_, err = p.Run()
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
